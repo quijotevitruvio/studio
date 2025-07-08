@@ -36,8 +36,14 @@ import {
   Code,
   Sparkles,
   Loader2,
+  Download,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, WidthType, BorderStyle } from "docx";
+import { saveAs } from "file-saver";
+
 
 export function AssetAllyForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -97,6 +103,171 @@ export function AssetAllyForm() {
     if (activePasswordIndex !== null) {
       form.setValue(`websites.${activePasswordIndex}.password`, password);
     }
+  };
+  
+  const handleDownloadPdf = () => {
+    const data = form.getValues();
+    if (!data.name) {
+        toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Por favor, introduce al menos el nombre del usuario para generar el informe.",
+        });
+        return;
+    }
+    const doc = new jsPDF();
+
+    doc.setFontSize(18);
+    doc.text("Informe de Activos - AssetAlly", 14, 22);
+    
+    doc.setFontSize(12);
+    doc.text(`Generado el: ${new Date().toLocaleDateString()}`, 14, 30);
+    
+    doc.setFontSize(14);
+    doc.text("Información del Usuario", 14, 45);
+    autoTable(doc, {
+      startY: 50,
+      head: [['Nombre Completo', 'Puesto de Trabajo']],
+      body: [[data.name, data.jobTitle]],
+      theme: 'grid'
+    });
+    
+    let lastY = (doc as any).lastAutoTable.finalY || 70;
+
+    if (data.contacts && data.contacts.length > 0) {
+        doc.text("Contactos", 14, lastY + 15);
+        autoTable(doc, {
+            startY: lastY + 20,
+            head: [['Número', 'Tiene WhatsApp']],
+            body: data.contacts.map(c => [c.number, c.hasWhatsapp ? 'Sí' : 'No']),
+            theme: 'grid'
+        });
+        lastY = (doc as any).lastAutoTable.finalY;
+    }
+
+    if (data.equipments && data.equipments.length > 0) {
+        doc.text("Equipamiento", 14, lastY + 15);
+        autoTable(doc, {
+            startY: lastY + 20,
+            head: [['Nombre', 'N/S', 'Tiene Licencia']],
+            body: data.equipments.map(e => [e.name, e.serial, e.hasLicense ? 'Sí' : 'No']),
+            theme: 'grid'
+        });
+        lastY = (doc as any).lastAutoTable.finalY;
+    }
+    
+    if (data.software && data.software.length > 0) {
+        doc.text("Software", 14, lastY + 15);
+        autoTable(doc, {
+            startY: lastY + 20,
+            head: [['Nombre']],
+            body: data.software.map(s => [s.name]),
+            theme: 'grid'
+        });
+        lastY = (doc as any).lastAutoTable.finalY;
+    }
+
+    if (data.websites && data.websites.length > 0) {
+        doc.text("Credenciales Web (Contraseñas no incluidas)", 14, lastY + 15);
+        autoTable(doc, {
+            startY: lastY + 20,
+            head: [['URL', 'Email/Usuario', '2FA', 'Email Recuperación']],
+            body: data.websites.map(w => [w.url, w.email, w.has2fa ? 'Sí' : 'No', w.recoveryEmail || 'N/A']),
+            theme: 'grid'
+        });
+    }
+
+    doc.save(`AssetAlly_Reporte_${data.name.replace(/\s/g, '_')}.pdf`);
+  };
+
+  const handleDownloadWord = () => {
+    const data = form.getValues();
+    if (!data.name) {
+        toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Por favor, introduce al menos el nombre del usuario para generar el informe.",
+        });
+        return;
+    }
+
+    const sections = [
+        new Paragraph({
+            heading: HeadingLevel.HEADING_1,
+            children: [new TextRun("Informe de Activos - AssetAlly")],
+        }),
+        new Paragraph({
+            children: [new TextRun(`Generado el: ${new Date().toLocaleDateString()}`)],
+        }),
+        new Paragraph({ text: "" }),
+    ];
+
+    sections.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun("Información del Usuario")] }));
+    sections.push(new Paragraph({ children: [new TextRun({ text: "Nombre: ", bold: true }), new TextRun(data.name || '')] }));
+    sections.push(new Paragraph({ children: [new TextRun({ text: "Puesto: ", bold: true }), new TextRun(data.jobTitle || '')] }));
+    sections.push(new Paragraph({ text: "" }));
+
+    const tableBorders = {
+        top: { style: BorderStyle.SINGLE, size: 1, color: "AAAAAA" },
+        bottom: { style: BorderStyle.SINGLE, size: 1, color: "AAAAAA" },
+        left: { style: BorderStyle.SINGLE, size: 1, color: "AAAAAA" },
+        right: { style: BorderStyle.SINGLE, size: 1, color: "AAAAAA" },
+        insideHorizontal: { style: BorderStyle.SINGLE, size: 1, color: "AAAAAA" },
+        insideVertical: { style: BorderStyle.SINGLE, size: 1, color: "AAAAAA" },
+    };
+    
+    const createHeaderCell = (text: string) => new TableCell({
+        children: [new Paragraph({ children: [new TextRun({ text, bold: true })] })],
+    });
+    
+    const createCell = (text: string) => new TableCell({
+        children: [new Paragraph(text)],
+    });
+
+    if (data.contacts && data.contacts.length > 0) {
+        sections.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun("Contactos")] }));
+        const contactRows = [
+            new TableRow({ children: [createHeaderCell("Número"), createHeaderCell("Tiene WhatsApp")] })
+        ].concat(data.contacts.map(c => new TableRow({ children: [createCell(c.number), createCell(c.hasWhatsapp ? 'Sí' : 'No')] })));
+        sections.push(new Table({ rows: contactRows, width: { size: 100, type: WidthType.PERCENTAGE }, borders: tableBorders }));
+        sections.push(new Paragraph({ text: "" }));
+    }
+
+    if (data.equipments && data.equipments.length > 0) {
+        sections.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun("Equipamiento")] }));
+        const equipmentRows = [
+            new TableRow({ children: [createHeaderCell("Nombre"), createHeaderCell("N/S"), createHeaderCell("Tiene Licencia")] })
+        ].concat(data.equipments.map(e => new TableRow({ children: [createCell(e.name), createCell(e.serial), createCell(e.hasLicense ? 'Sí' : 'No')] })));
+        sections.push(new Table({ rows: equipmentRows, width: { size: 100, type: WidthType.PERCENTAGE }, borders: tableBorders }));
+        sections.push(new Paragraph({ text: "" }));
+    }
+
+    if (data.software && data.software.length > 0) {
+        sections.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun("Software")] }));
+        const softwareRows = [new TableRow({ children: [createHeaderCell("Nombre")] })]
+            .concat(data.software.map(s => new TableRow({ children: [createCell(s.name)] })));
+        sections.push(new Table({ rows: softwareRows, width: { size: 100, type: WidthType.PERCENTAGE }, borders: tableBorders }));
+        sections.push(new Paragraph({ text: "" }));
+    }
+
+    if (data.websites && data.websites.length > 0) {
+        sections.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun("Credenciales Web (Contraseñas no incluidas)")] }));
+        const websiteRows = [
+            new TableRow({ children: [createHeaderCell("URL"), createHeaderCell("Email/Usuario"), createHeaderCell("2FA"), createHeaderCell("Email Recuperación")] })
+        ].concat(data.websites.map(w => new TableRow({ children: [
+            createCell(w.url), 
+            createCell(w.email), 
+            createCell(w.has2fa ? 'Sí' : 'No'),
+            createCell(w.recoveryEmail || 'N/A')
+        ] })));
+        sections.push(new Table({ rows: websiteRows, width: { size: 100, type: WidthType.PERCENTAGE }, borders: tableBorders }));
+    }
+
+    const doc = new Document({ sections: [{ children: sections }] });
+
+    Packer.toBlob(doc).then(blob => {
+        saveAs(blob, `AssetAlly_Reporte_${data.name.replace(/\s/g, '_')}.docx`);
+    });
   };
 
   return (
@@ -405,7 +576,15 @@ export function AssetAllyForm() {
           </Card>
 
 
-          <div className="flex justify-end pt-4">
+          <div className="flex justify-end pt-4 gap-2">
+            <Button type="button" variant="outline" onClick={handleDownloadPdf} disabled={isSubmitting}>
+              <Download className="mr-2 h-4 w-4" />
+              Descargar PDF
+            </Button>
+            <Button type="button" variant="outline" onClick={handleDownloadWord} disabled={isSubmitting}>
+              <Download className="mr-2 h-4 w-4" />
+              Descargar Word
+            </Button>
             <Button type="submit" size="lg" disabled={isSubmitting}>
               {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Guardar Toda la Información
