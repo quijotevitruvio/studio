@@ -12,10 +12,10 @@ export default function Home() {
             </div>
             <div>
               <h1 className="text-3xl sm:text-4xl font-bold font-headline text-foreground">
-                Famysalud
+                Capturadatos
               </h1>
               <p className="text-base text-muted-foreground mt-1">
-                Tu asistente de salud familiar.
+                Tu asistente para la captura de datos.
               </p>
             </div>
           </div>
@@ -24,7 +24,7 @@ export default function Home() {
         <AssetAllyForm />
       </main>
       <footer className="w-full max-w-4xl mx-auto mt-8 text-center text-sm text-muted-foreground">
-        <p>&copy; {new Date().getFullYear()} Famysalud. Todos los derechos reservados.</p>
+        <p>&copy; {new Date().getFullYear()} Capturadatos. Todos los derechos reservados.</p>
       </footer>
     </div>
   );

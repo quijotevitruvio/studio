@@ -126,7 +126,7 @@ export function AssetAllyForm() {
     const doc = new jsPDF();
 
     doc.setFontSize(18);
-    doc.text("Informe de Salud - Famysalud", 14, 22);
+    doc.text("Informe de Datos - Capturadatos", 14, 22);
     
     doc.setFontSize(10);
     doc.setTextColor(255, 0, 0); // Red color for warning
@@ -190,7 +190,7 @@ export function AssetAllyForm() {
         });
     }
 
-    doc.save(`Famysalud_Reporte_${data.name.replace(/\s/g, '_')}.pdf`);
+    doc.save(`Capturadatos_Reporte_${data.name.replace(/\s/g, '_')}.pdf`);
   };
 
   const handleDownloadTxt = async () => {
@@ -205,7 +205,7 @@ export function AssetAllyForm() {
         return;
     }
 
-    let content = `Informe de Salud - Famysalud\n`;
+    let content = `Informe de Datos - Capturadatos\n`;
     content += `===================================\n\n`;
     content += `¡Atención! Este documento contiene información sensible, incluyendo contraseñas. Manéjelo con cuidado.\n\n`;
     content += `Generado el: ${new Date().toLocaleDateString()}\n\n`;
@@ -256,7 +256,7 @@ export function AssetAllyForm() {
     }
 
     const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
-    saveAs(blob, `Famysalud_Reporte_${data.name.replace(/\s/g, '_')}.txt`);
+    saveAs(blob, `Capturadatos_Reporte_${data.name.replace(/\s/g, '_')}.txt`);
   };
 
   return (

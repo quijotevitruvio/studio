@@ -3,8 +3,8 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
-  title: 'Famysalud',
-  description: 'Tu asistente de salud familiar.',
+  title: 'Capturadatos',
+  description: 'Tu asistente para la captura de datos.',
 };
 
 export default function RootLayout({
