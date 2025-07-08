@@ -51,6 +51,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
+const legalText = "Este documento contiene información protegida por las leyes colombianas de habeas data, específicamente la Ley 1266 de 2008 y la Ley 1581 de 2012. Los datos aquí presentados serán verificados, y al aceptarlo, usted consiente a que cualquier dato proporcionado será sometido a verificación, generando responsabilidad laboral y legal en caso de incumplimiento, de acuerdo con la legislación vigente en Colombia.";
 
 export function AssetAllyForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -133,28 +134,38 @@ export function AssetAllyForm() {
         return;
     }
     const doc = new jsPDF();
+    let lastY = 22;
 
     doc.setFontSize(18);
-    doc.text("Informe de Datos - Capturadatos", 14, 22);
+    doc.text("Informe de Datos - Capturadatos", 14, lastY);
     
     doc.setFontSize(10);
     doc.setTextColor(255, 0, 0); // Red color for warning
-    doc.text("¡Atención! Este documento contiene información sensible, incluyendo contraseñas.", 14, 30);
+    doc.text("¡Atención! Este documento contiene información sensible, incluyendo contraseñas.", 14, lastY + 8);
     doc.setTextColor(0); // Reset color
+    lastY += 8;
+
+    doc.setFontSize(8);
+    doc.setTextColor(100);
+    const splitLegalText = doc.splitTextToSize(legalText, 180);
+    doc.text(splitLegalText, 14, lastY + 6);
+    lastY += (splitLegalText.length * 3.5) + 2;
+    doc.setTextColor(0);
 
     doc.setFontSize(12);
-    doc.text(`Generado el: ${new Date().toLocaleDateString()}`, 14, 38);
+    doc.text(`Generado el: ${new Date().toLocaleDateString()}`, 14, lastY + 8);
+    lastY += 8;
     
     doc.setFontSize(14);
-    doc.text("Información General", 14, 50);
+    doc.text("Información General", 14, lastY + 12);
     (doc as any).autoTable({
-      startY: 55,
+      startY: lastY + 17,
       head: [['Empresa', 'Nombre Completo', 'Puesto de Trabajo']],
       body: [[data.companyName || 'N/A', data.name, data.jobTitle]],
       theme: 'grid'
     });
     
-    let lastY = (doc as any).lastAutoTable.finalY || 70;
+    lastY = (doc as any).lastAutoTable.finalY || 70;
 
     if (data.contacts && data.contacts.length > 0) {
         doc.text("Contactos", 14, lastY + 15);
@@ -217,6 +228,7 @@ export function AssetAllyForm() {
     let content = `Informe de Datos - Capturadatos\n`;
     content += `===================================\n\n`;
     content += `¡Atención! Este documento contiene información sensible, incluyendo contraseñas. Manéjelo con cuidado.\n\n`;
+    content += `${legalText}\n\n`;
     content += `Generado el: ${new Date().toLocaleDateString()}\n\n`;
 
     content += `--- Información General ---\n`;
