@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -110,7 +111,8 @@ export function AssetAllyForm() {
   
   const handleDownloadPdf = async () => {
     const { default: jsPDF } = await import("jspdf");
-    const { default: autoTable } = await import("jspdf-autotable");
+    // This plugin extends jsPDF, so we import it for its side effects.
+    await import("jspdf-autotable");
 
     const data = form.getValues();
     if (!data.name) {
@@ -136,7 +138,7 @@ export function AssetAllyForm() {
     
     doc.setFontSize(14);
     doc.text("Información del Usuario", 14, 50);
-    autoTable(doc, {
+    (doc as any).autoTable({
       startY: 55,
       head: [['Nombre Completo', 'Puesto de Trabajo']],
       body: [[data.name, data.jobTitle]],
@@ -147,7 +149,7 @@ export function AssetAllyForm() {
 
     if (data.contacts && data.contacts.length > 0) {
         doc.text("Contactos", 14, lastY + 15);
-        autoTable(doc, {
+        (doc as any).autoTable({
             startY: lastY + 20,
             head: [['Número', 'Tipo', 'Tiene WhatsApp']],
             body: data.contacts.map(c => [c.number, c.type === 'personal' ? 'Personal' : 'Empresa', c.hasWhatsapp ? 'Sí' : 'No']),
@@ -158,7 +160,7 @@ export function AssetAllyForm() {
 
     if (data.equipments && data.equipments.length > 0) {
         doc.text("Equipamiento", 14, lastY + 15);
-        autoTable(doc, {
+        (doc as any).autoTable({
             startY: lastY + 20,
             head: [['Nombre', 'N/S', 'Tiene Licencia']],
             body: data.equipments.map(e => [e.name, e.serial, e.hasLicense ? 'Sí' : 'No']),
@@ -169,7 +171,7 @@ export function AssetAllyForm() {
     
     if (data.software && data.software.length > 0) {
         doc.text("Software", 14, lastY + 15);
-        autoTable(doc, {
+        (doc as any).autoTable({
             startY: lastY + 20,
             head: [['Nombre', 'Tiene Licencia']],
             body: data.software.map(s => [s.name, s.hasLicense ? 'Sí' : 'No']),
@@ -180,7 +182,7 @@ export function AssetAllyForm() {
 
     if (data.websites && data.websites.length > 0) {
         doc.text("Credenciales Web", 14, lastY + 15);
-        autoTable(doc, {
+        (doc as any).autoTable({
             startY: lastY + 20,
             head: [['URL', 'Email/Usuario', 'Contraseña', '2FA', 'Email Recuperación']],
             body: data.websites.map(w => [w.url, w.email, w.password, w.has2fa ? 'Sí' : 'No', w.recoveryEmail || 'N/A']),
@@ -635,3 +637,5 @@ export function AssetAllyForm() {
     </>
   );
 }
+
+    
