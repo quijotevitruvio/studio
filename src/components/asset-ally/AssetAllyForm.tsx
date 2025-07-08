@@ -126,13 +126,18 @@ export function AssetAllyForm() {
     doc.setFontSize(18);
     doc.text("Informe de Salud - Famysalud", 14, 22);
     
+    doc.setFontSize(10);
+    doc.setTextColor(255, 0, 0); // Red color for warning
+    doc.text("¡Atención! Este documento contiene información sensible, incluyendo contraseñas.", 14, 30);
+    doc.setTextColor(0); // Reset color
+
     doc.setFontSize(12);
-    doc.text(`Generado el: ${new Date().toLocaleDateString()}`, 14, 30);
+    doc.text(`Generado el: ${new Date().toLocaleDateString()}`, 14, 38);
     
     doc.setFontSize(14);
-    doc.text("Información del Usuario", 14, 45);
+    doc.text("Información del Usuario", 14, 50);
     autoTable(doc, {
-      startY: 50,
+      startY: 55,
       head: [['Nombre Completo', 'Puesto de Trabajo']],
       body: [[data.name, data.jobTitle]],
       theme: 'grid'
@@ -174,11 +179,11 @@ export function AssetAllyForm() {
     }
 
     if (data.websites && data.websites.length > 0) {
-        doc.text("Credenciales Web (Contraseñas no incluidas)", 14, lastY + 15);
+        doc.text("Credenciales Web", 14, lastY + 15);
         autoTable(doc, {
             startY: lastY + 20,
-            head: [['URL', 'Email/Usuario', '2FA', 'Email Recuperación']],
-            body: data.websites.map(w => [w.url, w.email, w.has2fa ? 'Sí' : 'No', w.recoveryEmail || 'N/A']),
+            head: [['URL', 'Email/Usuario', 'Contraseña', '2FA', 'Email Recuperación']],
+            body: data.websites.map(w => [w.url, w.email, w.password, w.has2fa ? 'Sí' : 'No', w.recoveryEmail || 'N/A']),
             theme: 'grid'
         });
     }
@@ -204,6 +209,13 @@ export function AssetAllyForm() {
         new Paragraph({
             heading: HeadingLevel.HEADING_1,
             children: [new TextRun("Informe de Salud - Famysalud")],
+        }),
+        new Paragraph({
+            children: [new TextRun({
+                text: "¡Atención! Este documento contiene información sensible, incluyendo contraseñas. Manéjelo con cuidado.",
+                color: "FF0000",
+                bold: true,
+            })],
         }),
         new Paragraph({
             children: [new TextRun(`Generado el: ${new Date().toLocaleDateString()}`)],
@@ -261,12 +273,13 @@ export function AssetAllyForm() {
     }
 
     if (data.websites && data.websites.length > 0) {
-        sections.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun("Credenciales Web (Contraseñas no incluidas)")] }));
+        sections.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun("Credenciales Web")] }));
         const websiteRows = [
-            new TableRow({ children: [createHeaderCell("URL"), createHeaderCell("Email/Usuario"), createHeaderCell("2FA"), createHeaderCell("Email Recuperación")] })
+            new TableRow({ children: [createHeaderCell("URL"), createHeaderCell("Email/Usuario"), createHeaderCell("Contraseña"), createHeaderCell("2FA"), createHeaderCell("Email Recuperación")] })
         ].concat(data.websites.map(w => new TableRow({ children: [
             createCell(w.url), 
             createCell(w.email), 
+            createCell(w.password),
             createCell(w.has2fa ? 'Sí' : 'No'),
             createCell(w.recoveryEmail || 'N/A')
         ] })));
