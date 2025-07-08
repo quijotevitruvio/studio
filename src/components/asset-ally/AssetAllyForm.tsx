@@ -193,8 +193,8 @@ export function AssetAllyForm() {
         doc.text("Credenciales Web", 14, lastY + 15);
         (doc as any).autoTable({
             startY: lastY + 20,
-            head: [['URL', 'Email/Usuario', 'Contraseña', '2FA', 'Email Recuperación', 'Observaciones']],
-            body: data.websites.map(w => [w.url, w.email, w.password, w.has2fa ? 'Sí' : 'No', w.recoveryEmail || 'N/A', w.observations || 'N/A']),
+            head: [['URL', 'Email/Usuario', 'Contraseña', '2FA', 'Email Recuperación', 'Celular Recuperación', 'Observaciones']],
+            body: data.websites.map(w => [w.url, w.email, w.password, w.has2fa ? 'Sí' : 'No', w.recoveryEmail || 'N/A', w.recoveryPhoneNumber || 'N/A', w.observations || 'N/A']),
             theme: 'grid'
         });
     }
@@ -273,6 +273,7 @@ export function AssetAllyForm() {
             content += `  Contraseña: ${w.password}\n`;
             content += `  2FA Habilitado: ${w.has2fa ? 'Sí' : 'No'}\n`;
             content += `  Email Recuperación: ${w.recoveryEmail || 'N/A'}\n`;
+            content += `  Celular Recuperación: ${w.recoveryPhoneNumber || 'N/A'}\n`;
             content += `  Observaciones: ${w.observations || 'N/A'}\n\n`;
         });
     }
@@ -768,37 +769,48 @@ export function AssetAllyForm() {
                               </FormItem>
                             )}
                           />
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                           <FormField
+                              control={form.control}
+                              name={`websites.${index}.recoveryEmail`}
+                              render={({ field }) => (
+                                  <FormItem>
+                                      <FormLabel>Email de Recuperación (opcional)</FormLabel>
+                                      <FormControl><Input placeholder="recuperacion@ejemplo.com" {...field} value={field.value ?? ''} /></FormControl>
+                                      <FormMessage />
+                                  </FormItem>
+                              )}
+                          />
+                           <FormField
+                              control={form.control}
+                              name={`websites.${index}.recoveryPhoneNumber`}
+                              render={({ field }) => (
+                                  <FormItem>
+                                      <FormLabel>Celular de Recuperación (opcional)</FormLabel>
+                                      <FormControl><Input placeholder="+34 600 123 456" {...field} value={field.value ?? ''} /></FormControl>
+                                      <FormMessage />
+                                  </FormItem>
+                              )}
+                          />
+                        </div>
+                        <div className="flex items-center justify-between gap-4 pt-4">
                             <FormField
                                 control={form.control}
-                                name={`websites.${index}.recoveryEmail`}
+                                name={`websites.${index}.has2fa`}
                                 render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Email de Recuperación (opcional)</FormLabel>
-                                        <FormControl><Input placeholder="recuperacion@ejemplo.com" {...field} /></FormControl>
-                                        <FormMessage />
+                                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm flex-1">
+                                        <FormLabel>¿2FA Habilitado?</FormLabel>
+                                        <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
                                     </FormItem>
                                 )}
                             />
-                            <div className="flex items-center justify-between gap-4">
-                                <FormField
-                                    control={form.control}
-                                    name={`websites.${index}.has2fa`}
-                                    render={({ field }) => (
-                                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm flex-1">
-                                            <FormLabel>¿2FA Habilitado?</FormLabel>
-                                            <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
-                                        </FormItem>
-                                    )}
-                                />
-                                <Button type="button" variant="destructive" size="icon" onClick={() => removeWebsite(index)} aria-label="Eliminar sitio web">
-                                    <Trash2 className="h-4 w-4" />
-                                </Button>
-                            </div>
+                            <Button type="button" variant="destructive" size="icon" onClick={() => removeWebsite(index)} aria-label="Eliminar sitio web">
+                                <Trash2 className="h-4 w-4" />
+                            </Button>
                         </div>
                     </div>
                 ))}
-                <Button type="button" variant="outline" onClick={() => appendWebsite({ url: '', email: '', password: '', has2fa: false, recoveryEmail: '', observations: '' })}>
+                <Button type="button" variant="outline" onClick={() => appendWebsite({ url: '', email: '', password: '', has2fa: false, recoveryEmail: '', recoveryPhoneNumber: '', observations: '' })}>
                     <PlusCircle className="mr-2 h-4 w-4" /> Añadir Sitio Web
                 </Button>
             </CardContent>

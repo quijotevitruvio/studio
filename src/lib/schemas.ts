@@ -34,6 +34,7 @@ const websiteSchema = z.object({
   password: z.string().min(1, "La contraseña es obligatoria."),
   has2fa: z.boolean().default(false),
   recoveryEmail: z.string().email("Email de recuperación inválido.").optional().or(z.literal("")),
+  recoveryPhoneNumber: z.string().optional().or(z.literal("")),
   observations: z.string().optional(),
 });
 
