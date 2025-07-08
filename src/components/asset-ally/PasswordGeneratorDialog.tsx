@@ -76,8 +76,8 @@ export function PasswordGeneratorDialog({
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2000);
     toast({
-      title: "Copied!",
-      description: "Password copied to clipboard.",
+      title: "¡Copiado!",
+      description: "Contraseña copiada al portapapeles.",
     });
   };
   
@@ -91,10 +91,10 @@ export function PasswordGeneratorDialog({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Sparkles className="text-primary" /> AI Password Generator
+            <Sparkles className="text-primary" /> Generador de Contraseñas con IA
           </DialogTitle>
           <DialogDescription>
-            Create a strong, secure password based on your criteria.
+            Crea una contraseña fuerte y segura basada en tus criterios.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -105,7 +105,7 @@ export function PasswordGeneratorDialog({
               render={({ field }) => (
                 <FormItem>
                   <div className="flex justify-between items-center">
-                    <FormLabel>Password Length</FormLabel>
+                    <FormLabel>Longitud de la Contraseña</FormLabel>
                     <span className="text-sm font-medium text-primary">{field.value}</span>
                   </div>
                   <FormControl>
@@ -126,7 +126,7 @@ export function PasswordGeneratorDialog({
                 name="includeNumbers"
                 render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm flex-1">
-                        <FormLabel>Include Numbers</FormLabel>
+                        <FormLabel>Incluir Números</FormLabel>
                         <FormControl>
                             <Switch checked={field.value} onCheckedChange={field.onChange} />
                         </FormControl>
@@ -138,7 +138,7 @@ export function PasswordGeneratorDialog({
                 name="includeSymbols"
                 render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm flex-1">
-                        <FormLabel>Include Symbols</FormLabel>
+                        <FormLabel>Incluir Símbolos</FormLabel>
                         <FormControl>
                             <Switch checked={field.value} onCheckedChange={field.onChange} />
                         </FormControl>
@@ -152,22 +152,22 @@ export function PasswordGeneratorDialog({
               ) : (
                 <Sparkles className="mr-2 h-4 w-4" />
               )}
-              Generate Password
+              Generar Contraseña
             </Button>
           </form>
         </Form>
         {generatedPassword && (
           <div className="space-y-3">
-            <label className="text-sm font-medium">Generated Password</label>
+            <label className="text-sm font-medium">Contraseña Generada</label>
             <div className="flex gap-2">
               <Input value={generatedPassword} readOnly className="font-mono" />
-              <Button variant="outline" size="icon" onClick={copyToClipboard} aria-label="Copy password">
+              <Button variant="outline" size="icon" onClick={copyToClipboard} aria-label="Copiar contraseña">
                 {isCopied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
               </Button>
             </div>
              <DialogFooter className="pt-4">
-                <Button variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
-                <Button onClick={applyPassword}>Apply Password</Button>
+                <Button variant="ghost" onClick={() => onOpenChange(false)}>Cancelar</Button>
+                <Button onClick={applyPassword}>Aplicar Contraseña</Button>
             </DialogFooter>
           </div>
         )}

@@ -86,8 +86,8 @@ export function AssetAllyForm() {
     // Simulate API call
     setTimeout(() => {
       toast({
-        title: "Success!",
-        description: "Asset information has been saved.",
+        title: "¡Éxito!",
+        description: "La información de los activos ha sido guardada.",
       });
       setIsSubmitting(false);
     }, 1500);
@@ -106,10 +106,10 @@ export function AssetAllyForm() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <User className="text-primary" /> User Information
+                <User className="text-primary" /> Información del Usuario
               </CardTitle>
               <CardDescription>
-                Enter the basic details of the user.
+                Introduce los detalles básicos del usuario.
               </CardDescription>
             </CardHeader>
             <CardContent className="grid sm:grid-cols-2 gap-4">
@@ -118,9 +118,9 @@ export function AssetAllyForm() {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Full Name</FormLabel>
+                    <FormLabel>Nombre Completo</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g., Jane Doe" {...field} />
+                      <Input placeholder="p.ej., Juan Pérez" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -131,9 +131,9 @@ export function AssetAllyForm() {
                 name="jobTitle"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Job Title</FormLabel>
+                    <FormLabel>Puesto de Trabajo</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g., Software Engineer" {...field} />
+                      <Input placeholder="p.ej., Ingeniero de Software" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -145,10 +145,10 @@ export function AssetAllyForm() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Phone className="text-primary" /> Contact Information
+                <Phone className="text-primary" /> Información de Contacto
               </CardTitle>
               <CardDescription>
-                Add one or more contact numbers.
+                Añade uno o más números de contacto.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -163,9 +163,9 @@ export function AssetAllyForm() {
                       name={`contacts.${index}.number`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Phone Number</FormLabel>
+                          <FormLabel>Número de Teléfono</FormLabel>
                           <FormControl>
-                            <Input placeholder="+1 (555) 123-4567" {...field} />
+                            <Input placeholder="+34 600 123 456" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -177,7 +177,7 @@ export function AssetAllyForm() {
                           name={`contacts.${index}.hasWhatsapp`}
                           render={({ field }) => (
                             <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm flex-1">
-                              <FormLabel>Has WhatsApp?</FormLabel>
+                              <FormLabel>¿Tiene WhatsApp?</FormLabel>
                               <FormControl>
                                 <Switch
                                   checked={field.value}
@@ -192,7 +192,7 @@ export function AssetAllyForm() {
                           variant="destructive"
                           size="icon"
                           onClick={() => removeContact(index)}
-                          aria-label="Remove phone number"
+                          aria-label="Eliminar número de teléfono"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -205,7 +205,7 @@ export function AssetAllyForm() {
                 variant="outline"
                 onClick={() => appendContact({ number: "", hasWhatsapp: false })}
               >
-                <PlusCircle className="mr-2 h-4 w-4" /> Add Phone Number
+                <PlusCircle className="mr-2 h-4 w-4" /> Añadir Número de Teléfono
               </Button>
             </CardContent>
           </Card>
@@ -213,9 +213,9 @@ export function AssetAllyForm() {
           <Card>
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                    <Laptop className="text-primary" /> Equipment
+                    <Laptop className="text-primary" /> Equipamiento
                 </CardTitle>
-                <CardDescription>List all assigned equipment.</CardDescription>
+                <CardDescription>Enumera todo el equipamiento asignado.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
                 {equipmentFields.map((field, index) => (
@@ -225,9 +225,9 @@ export function AssetAllyForm() {
                             name={`equipments.${index}.name`}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Equipment Name</FormLabel>
+                                    <FormLabel>Nombre del Equipo</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="e.g., Dell Latitude 7420" {...field} />
+                                        <Input placeholder="p.ej., Dell Latitude 7420" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -239,9 +239,9 @@ export function AssetAllyForm() {
                                 name={`equipments.${index}.serial`}
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Serial Number</FormLabel>
+                                        <FormLabel>Número de Serie</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="e.g., ABC123XYZ" {...field} />
+                                            <Input placeholder="p.ej., ABC123XYZ" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -253,7 +253,7 @@ export function AssetAllyForm() {
                                     name={`equipments.${index}.hasLicense`}
                                     render={({ field }) => (
                                         <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm flex-1">
-                                            <FormLabel>Has License?</FormLabel>
+                                            <FormLabel>¿Tiene Licencia?</FormLabel>
                                             <FormControl>
                                                 <Switch checked={field.value} onCheckedChange={field.onChange} />
                                             </FormControl>
@@ -265,7 +265,7 @@ export function AssetAllyForm() {
                                     variant="destructive"
                                     size="icon"
                                     onClick={() => removeEquipment(index)}
-                                    aria-label="Remove equipment"
+                                    aria-label="Eliminar equipamiento"
                                 >
                                     <Trash2 className="h-4 w-4" />
                                 </Button>
@@ -274,7 +274,7 @@ export function AssetAllyForm() {
                     </div>
                 ))}
                  <Button type="button" variant="outline" onClick={() => appendEquipment({ name: '', serial: '', hasLicense: false })}>
-                    <PlusCircle className="mr-2 h-4 w-4" /> Add Equipment
+                    <PlusCircle className="mr-2 h-4 w-4" /> Añadir Equipamiento
                  </Button>
             </CardContent>
           </Card>
@@ -282,9 +282,9 @@ export function AssetAllyForm() {
           <Card>
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                    <Code className="text-primary" /> Software Applications
+                    <Code className="text-primary" /> Aplicaciones de Software
                 </CardTitle>
-                <CardDescription>List frequently used software.</CardDescription>
+                <CardDescription>Enumera el software de uso frecuente.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
                 {softwareFields.map((field, index) => (
@@ -295,7 +295,7 @@ export function AssetAllyForm() {
                             render={({ field }) => (
                                 <FormItem className="flex-grow">
                                     <FormControl>
-                                        <Input placeholder="e.g., VS Code, Photoshop" {...field} />
+                                        <Input placeholder="p.ej., VS Code, Photoshop" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -306,14 +306,14 @@ export function AssetAllyForm() {
                             variant="destructive"
                             size="icon"
                             onClick={() => removeSoftware(index)}
-                            aria-label="Remove software"
+                            aria-label="Eliminar software"
                         >
                             <Trash2 className="h-4 w-4" />
                         </Button>
                     </div>
                 ))}
                 <Button type="button" variant="outline" onClick={() => appendSoftware({ name: '' })}>
-                    <PlusCircle className="mr-2 h-4 w-4" /> Add Software
+                    <PlusCircle className="mr-2 h-4 w-4" /> Añadir Software
                 </Button>
             </CardContent>
           </Card>
@@ -321,9 +321,9 @@ export function AssetAllyForm() {
           <Card>
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                    <Globe className="text-primary" /> Website Credentials
+                    <Globe className="text-primary" /> Credenciales de Sitios Web
                 </CardTitle>
-                <CardDescription>Securely store website login details.</CardDescription>
+                <CardDescription>Guarda de forma segura los datos de inicio de sesión de sitios web.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
                 {websiteFields.map((field, index) => (
@@ -333,8 +333,8 @@ export function AssetAllyForm() {
                             name={`websites.${index}.url`}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Website URL</FormLabel>
-                                    <FormControl><Input placeholder="https://example.com" {...field} /></FormControl>
+                                    <FormLabel>URL del Sitio Web</FormLabel>
+                                    <FormControl><Input placeholder="https://ejemplo.com" {...field} /></FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -345,8 +345,8 @@ export function AssetAllyForm() {
                                 name={`websites.${index}.email`}
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Email / Username</FormLabel>
-                                        <FormControl><Input placeholder="user@example.com" {...field} /></FormControl>
+                                        <FormLabel>Email / Nombre de Usuario</FormLabel>
+                                        <FormControl><Input placeholder="usuario@ejemplo.com" {...field} /></FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -356,10 +356,10 @@ export function AssetAllyForm() {
                                 name={`websites.${index}.password`}
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Password</FormLabel>
+                                        <FormLabel>Contraseña</FormLabel>
                                         <div className="flex gap-2">
                                             <FormControl><Input type="password" placeholder="••••••••" {...field} /></FormControl>
-                                            <Button type="button" variant="outline" size="icon" onClick={() => setActivePasswordIndex(index)} aria-label="Generate Password">
+                                            <Button type="button" variant="outline" size="icon" onClick={() => setActivePasswordIndex(index)} aria-label="Generar Contraseña">
                                                 <Sparkles className="h-4 w-4 text-primary" />
                                             </Button>
                                         </div>
@@ -374,8 +374,8 @@ export function AssetAllyForm() {
                                 name={`websites.${index}.recoveryEmail`}
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Recovery Email (optional)</FormLabel>
-                                        <FormControl><Input placeholder="recovery@example.com" {...field} /></FormControl>
+                                        <FormLabel>Email de Recuperación (opcional)</FormLabel>
+                                        <FormControl><Input placeholder="recuperacion@ejemplo.com" {...field} /></FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -386,12 +386,12 @@ export function AssetAllyForm() {
                                     name={`websites.${index}.has2fa`}
                                     render={({ field }) => (
                                         <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm flex-1">
-                                            <FormLabel>2FA Enabled?</FormLabel>
+                                            <FormLabel>¿2FA Habilitado?</FormLabel>
                                             <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
                                         </FormItem>
                                     )}
                                 />
-                                <Button type="button" variant="destructive" size="icon" onClick={() => removeWebsite(index)} aria-label="Remove website">
+                                <Button type="button" variant="destructive" size="icon" onClick={() => removeWebsite(index)} aria-label="Eliminar sitio web">
                                     <Trash2 className="h-4 w-4" />
                                 </Button>
                             </div>
@@ -399,7 +399,7 @@ export function AssetAllyForm() {
                     </div>
                 ))}
                 <Button type="button" variant="outline" onClick={() => appendWebsite({ url: '', email: '', password: '', has2fa: false, recoveryEmail: '' })}>
-                    <PlusCircle className="mr-2 h-4 w-4" /> Add Website
+                    <PlusCircle className="mr-2 h-4 w-4" /> Añadir Sitio Web
                 </Button>
             </CardContent>
           </Card>
@@ -408,7 +408,7 @@ export function AssetAllyForm() {
           <div className="flex justify-end pt-4">
             <Button type="submit" size="lg" disabled={isSubmitting}>
               {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Save All Information
+              Guardar Toda la Información
             </Button>
           </div>
         </form>

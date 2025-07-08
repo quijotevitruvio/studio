@@ -15,7 +15,7 @@ export default function Home() {
                 AssetAlly
               </h1>
               <p className="text-base text-muted-foreground mt-1">
-                Manage your digital & physical assets securely.
+                Gestiona tus activos digitales y físicos de forma segura.
               </p>
             </div>
           </div>
@@ -24,7 +24,7 @@ export default function Home() {
         <AssetAllyForm />
       </main>
       <footer className="w-full max-w-4xl mx-auto mt-8 text-center text-sm text-muted-foreground">
-        <p>&copy; {new Date().getFullYear()} AssetAlly. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} AssetAlly. Todos los derechos reservados.</p>
       </footer>
     </div>
   );

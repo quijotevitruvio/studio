@@ -11,9 +11,9 @@ export async function generatePasswordAction(input: SuggestPasswordInput) {
     return { success: true, password: result.password };
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return { success: false, error: "Invalid input." };
+      return { success: false, error: "Entrada inválida." };
     }
     console.error("Password generation failed:", error);
-    return { success: false, error: "An unexpected error occurred. Please try again." };
+    return { success: false, error: "Ocurrió un error inesperado. Por favor, inténtalo de nuevo." };
   }
 }

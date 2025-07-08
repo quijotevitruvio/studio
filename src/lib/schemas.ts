@@ -2,34 +2,34 @@ import { z } from "zod";
 
 const phoneSchema = z.object({
   id: z.string().optional(),
-  number: z.string().min(1, "Phone number is required."),
+  number: z.string().min(1, "El número de teléfono es obligatorio."),
   hasWhatsapp: z.boolean().default(false),
 });
 
 const equipmentSchema = z.object({
   id: z.string().optional(),
-  name: z.string().min(1, "Equipment name is required."),
-  serial: z.string().min(1, "Serial number is required."),
+  name: z.string().min(1, "El nombre del equipo es obligatorio."),
+  serial: z.string().min(1, "El número de serie es obligatorio."),
   hasLicense: z.boolean().default(false),
 });
 
 const softwareSchema = z.object({
   id: z.string().optional(),
-  name: z.string().min(1, "Software name is required."),
+  name: z.string().min(1, "El nombre del software es obligatorio."),
 });
 
 const websiteSchema = z.object({
   id: z.string().optional(),
-  url: z.string().url("Invalid URL.").min(1, "URL is required."),
-  email: z.string().email("Invalid email.").min(1, "Email is required."),
-  password: z.string().min(1, "Password is required."),
+  url: z.string().url("URL inválida.").min(1, "La URL es obligatoria."),
+  email: z.string().email("Email inválido.").min(1, "El email es obligatorio."),
+  password: z.string().min(1, "La contraseña es obligatoria."),
   has2fa: z.boolean().default(false),
-  recoveryEmail: z.string().email("Invalid recovery email.").optional().or(z.literal("")),
+  recoveryEmail: z.string().email("Email de recuperación inválido.").optional().or(z.literal("")),
 });
 
 export const assetAllySchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters."),
-  jobTitle: z.string().min(2, "Job title must be at least 2 characters."),
+  name: z.string().min(2, "El nombre debe tener al menos 2 caracteres."),
+  jobTitle: z.string().min(2, "El puesto de trabajo debe tener al menos 2 caracteres."),
   contacts: z.array(phoneSchema).default([]),
   equipments: z.array(equipmentSchema).default([]),
   software: z.array(softwareSchema).default([]),
@@ -39,7 +39,7 @@ export const assetAllySchema = z.object({
 export type AssetAllyFormValues = z.infer<typeof assetAllySchema>;
 
 export const passwordGeneratorSchema = z.object({
-  length: z.number().min(8, "Must be at least 8").max(128, "Must be at most 128").default(16),
+  length: z.number().min(8, "Debe ser de al menos 8").max(128, "Debe ser de como máximo 128").default(16),
   includeNumbers: z.boolean().default(true),
   includeSymbols: z.boolean().default(true),
 });
