@@ -11,6 +11,8 @@ const phoneSchema = z.object({
 const equipmentSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "El nombre del equipo es obligatorio."),
+  username: z.string().optional(),
+  password: z.string().optional(),
   serial: z.string().min(1, "El número de serie es obligatorio."),
   hasLicense: z.boolean().default(false),
   licenseSerial: z.string().optional(),

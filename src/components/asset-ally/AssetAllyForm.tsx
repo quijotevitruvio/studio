@@ -164,8 +164,8 @@ export function AssetAllyForm() {
         doc.text("Equipamiento", 14, lastY + 15);
         (doc as any).autoTable({
             startY: lastY + 20,
-            head: [['Nombre', 'N/S', 'Tiene Licencia', 'Serial Licencia', 'Observaciones']],
-            body: data.equipments.map(e => [e.name, e.serial, e.hasLicense ? 'Sí' : 'No', e.hasLicense ? (e.licenseSerial || 'N/A') : 'N/A', e.observations || 'N/A']),
+            head: [['Nombre', 'Usuario', 'Contraseña', 'N/S', 'Tiene Licencia', 'Serial Licencia', 'Observaciones']],
+            body: data.equipments.map(e => [e.name, e.username || 'N/A', e.password || 'N/A', e.serial, e.hasLicense ? 'Sí' : 'No', e.hasLicense ? (e.licenseSerial || 'N/A') : 'N/A', e.observations || 'N/A']),
             theme: 'grid'
         });
         lastY = (doc as any).lastAutoTable.finalY;
@@ -233,6 +233,8 @@ export function AssetAllyForm() {
         data.equipments.forEach((e, i) => {
             content += `Equipo #${i + 1}\n`;
             content += `  Nombre: ${e.name}\n`;
+            content += `  Usuario: ${e.username || 'N/A'}\n`;
+            content += `  Contraseña: ${e.password || 'N/A'}\n`;
             content += `  N/S: ${e.serial}\n`;
             content += `  Tiene Licencia: ${e.hasLicense ? 'Sí' : 'No'}\n`;
             if (e.hasLicense) {
@@ -477,6 +479,34 @@ export function AssetAllyForm() {
                                 </FormItem>
                             )}
                          />
+                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <FormField
+                                control={form.control}
+                                name={`equipments.${index}.username`}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Usuario del Equipo</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="p.ej., jperez" {...field} value={field.value ?? ''} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name={`equipments.${index}.password`}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Contraseña del Equipo</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="••••••••" {...field} value={field.value ?? ''}/>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
                         <FormField
                             control={form.control}
                             name={`equipments.${index}.serial`}
@@ -545,7 +575,7 @@ export function AssetAllyForm() {
                         </div>
                     </div>
                 ))}
-                 <Button type="button" variant="outline" onClick={() => appendEquipment({ name: '', serial: '', hasLicense: false, licenseSerial: '', observations: '' })}>
+                 <Button type="button" variant="outline" onClick={() => appendEquipment({ name: '', username: '', password: '', serial: '', hasLicense: false, licenseSerial: '', observations: '' })}>
                     <PlusCircle className="mr-2 h-4 w-4" /> Añadir Equipamiento
                  </Button>
             </CardContent>
