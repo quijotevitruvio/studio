@@ -29,7 +29,7 @@ const softwareSchema = z.object({
 
 const websiteSchema = z.object({
   id: z.string().optional(),
-  url: z.string().url("URL inválida.").min(1, "La URL es obligatoria."),
+  url: z.string().min(1, "La URL es obligatoria."),
   email: z.string().email("Email inválido.").min(1, "El email es obligatorio."),
   password: z.string().min(1, "La contraseña es obligatoria."),
   has2fa: z.boolean().default(false),
