@@ -25,6 +25,13 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { PasswordGeneratorDialog } from "./PasswordGeneratorDialog";
 import {
   PlusCircle,
@@ -137,8 +144,8 @@ export function AssetAllyForm() {
         doc.text("Contactos", 14, lastY + 15);
         autoTable(doc, {
             startY: lastY + 20,
-            head: [['Número', 'Tiene WhatsApp']],
-            body: data.contacts.map(c => [c.number, c.hasWhatsapp ? 'Sí' : 'No']),
+            head: [['Número', 'Tipo', 'Tiene WhatsApp']],
+            body: data.contacts.map(c => [c.number, c.type === 'personal' ? 'Personal' : 'Empresa', c.hasWhatsapp ? 'Sí' : 'No']),
             theme: 'grid'
         });
         lastY = (doc as any).lastAutoTable.finalY;
@@ -229,8 +236,8 @@ export function AssetAllyForm() {
     if (data.contacts && data.contacts.length > 0) {
         sections.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun("Contactos")] }));
         const contactRows = [
-            new TableRow({ children: [createHeaderCell("Número"), createHeaderCell("Tiene WhatsApp")] })
-        ].concat(data.contacts.map(c => new TableRow({ children: [createCell(c.number), createCell(c.hasWhatsapp ? 'Sí' : 'No')] })));
+            new TableRow({ children: [createHeaderCell("Número"), createHeaderCell("Tipo"), createHeaderCell("Tiene WhatsApp")] })
+        ].concat(data.contacts.map(c => new TableRow({ children: [createCell(c.number), createCell(c.type === 'personal' ? 'Personal' : 'Empresa'), createCell(c.hasWhatsapp ? 'Sí' : 'No')] })));
         sections.push(new Table({ rows: contactRows, width: { size: 100, type: WidthType.PERCENTAGE }, borders: tableBorders }));
         sections.push(new Paragraph({ text: "" }));
     }
@@ -330,7 +337,7 @@ export function AssetAllyForm() {
                   key={field.id}
                   className="p-4 border rounded-lg space-y-4 bg-background"
                 >
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
                       name={`contacts.${index}.number`}
@@ -344,41 +351,72 @@ export function AssetAllyForm() {
                         </FormItem>
                       )}
                     />
-                    <div className="flex items-center justify-between gap-4">
-                       <FormField
-                          control={form.control}
-                          name={`contacts.${index}.hasWhatsapp`}
-                          render={({ field }) => (
-                            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm flex-1">
-                              <FormLabel>¿Tiene WhatsApp?</FormLabel>
-                              <FormControl>
-                                <Switch
-                                  checked={field.value}
-                                  onCheckedChange={field.onChange}
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                       <Button
-                          type="button"
-                          variant="destructive"
-                          size="icon"
-                          onClick={() => removeContact(index)}
-                          aria-label="Eliminar número de teléfono"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                    </div>
+                    <FormField
+                      control={form.control}
+                      name={`contacts.${index}.type`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Tipo</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecciona un tipo" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="personal">Personal</SelectItem>
+                              <SelectItem value="empresa">Empresa</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between gap-4">
+                    <FormField
+                      control={form.control}
+                      name={`contacts.${index}.hasWhatsapp`}
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm flex-1">
+                          <FormLabel>¿Tiene WhatsApp?</FormLabel>
+                          <FormControl>
+                            <Switch
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="icon"
+                      onClick={() => removeContact(index)}
+                      aria-label="Eliminar número de teléfono"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
               ))}
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => appendContact({ number: "", hasWhatsapp: false })}
+                onClick={() =>
+                  appendContact({
+                    number: "",
+                    type: "personal",
+                    hasWhatsapp: false,
+                  })
+                }
               >
-                <PlusCircle className="mr-2 h-4 w-4" /> Añadir Número de Teléfono
+                <PlusCircle className="mr-2 h-4 w-4" /> Añadir Número de
+                Teléfono
               </Button>
             </CardContent>
           </Card>

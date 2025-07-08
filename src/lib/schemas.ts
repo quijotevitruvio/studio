@@ -3,6 +3,7 @@ import { z } from "zod";
 const phoneSchema = z.object({
   id: z.string().optional(),
   number: z.string().min(1, "El número de teléfono es obligatorio."),
+  type: z.enum(["personal", "empresa"]).default("personal"),
   hasWhatsapp: z.boolean().default(false),
 });
 
