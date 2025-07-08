@@ -46,6 +46,8 @@ import {
   Loader2,
   Download,
   Building2,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -55,6 +57,7 @@ export function AssetAllyForm() {
   const [activePasswordIndex, setActivePasswordIndex] = useState<number | null>(
     null
   );
+  const [passwordVisibility, setPasswordVisibility] = useState<{ [key: string]: boolean }>({});
   const { toast } = useToast();
 
   const form = useForm<AssetAllyFormValues>({
@@ -91,6 +94,10 @@ export function AssetAllyForm() {
     remove: removeWebsite,
   } = useFieldArray({ control: form.control, name: "websites" });
 
+  const togglePasswordVisibility = (key: string) => {
+    setPasswordVisibility((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+  
   const onSubmit = (data: AssetAllyFormValues) => {
     setIsSubmitting(true);
     console.log(data);
@@ -499,9 +506,25 @@ export function AssetAllyForm() {
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Contraseña del Equipo</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="••••••••" {...field} value={field.value ?? ''}/>
-                                        </FormControl>
+                                        <div className="relative">
+                                          <FormControl>
+                                              <Input 
+                                                  type={passwordVisibility[`equipments-${index}`] ? 'text' : 'password'}
+                                                  placeholder="••••••••" 
+                                                  {...field} 
+                                                  value={field.value ?? ''}
+                                                  className="pr-10"
+                                              />
+                                          </FormControl>
+                                          <button
+                                              type="button"
+                                              onClick={() => togglePasswordVisibility(`equipments-${index}`)}
+                                              className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground"
+                                              aria-label={passwordVisibility[`equipments-${index}`] ? "Ocultar contraseña" : "Mostrar contraseña"}
+                                          >
+                                              {passwordVisibility[`equipments-${index}`] ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                          </button>
+                                        </div>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -705,10 +728,27 @@ export function AssetAllyForm() {
                                     <FormItem>
                                         <FormLabel>Contraseña</FormLabel>
                                         <div className="flex gap-2">
-                                            <FormControl><Input type="password" placeholder="••••••••" {...field} /></FormControl>
-                                            <Button type="button" variant="outline" size="icon" onClick={() => setActivePasswordIndex(index)} aria-label="Generar Contraseña">
-                                                <Sparkles className="h-4 w-4 text-primary" />
-                                            </Button>
+                                          <div className="relative flex-grow">
+                                            <FormControl>
+                                              <Input
+                                                type={passwordVisibility[`websites-${index}`] ? 'text' : 'password'}
+                                                placeholder="••••••••"
+                                                {...field}
+                                                className="pr-10"
+                                              />
+                                            </FormControl>
+                                            <button
+                                                type="button"
+                                                onClick={() => togglePasswordVisibility(`websites-${index}`)}
+                                                className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground"
+                                                aria-label={passwordVisibility[`websites-${index}`] ? "Ocultar contraseña" : "Mostrar contraseña"}
+                                            >
+                                                {passwordVisibility[`websites-${index}`] ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                            </button>
+                                          </div>
+                                          <Button type="button" variant="outline" size="icon" onClick={() => setActivePasswordIndex(index)} aria-label="Generar Contraseña">
+                                              <Sparkles className="h-4 w-4 text-primary" />
+                                          </Button>
                                         </div>
                                         <FormMessage />
                                     </FormItem>
