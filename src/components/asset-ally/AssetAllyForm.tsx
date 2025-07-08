@@ -39,10 +39,6 @@ import {
   Download,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
-import { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, WidthType, BorderStyle } from "docx";
-import { saveAs } from "file-saver";
 
 
 export function AssetAllyForm() {
@@ -105,7 +101,10 @@ export function AssetAllyForm() {
     }
   };
   
-  const handleDownloadPdf = () => {
+  const handleDownloadPdf = async () => {
+    const { default: jsPDF } = await import("jspdf");
+    const { default: autoTable } = await import("jspdf-autotable");
+
     const data = form.getValues();
     if (!data.name) {
         toast({
@@ -180,7 +179,10 @@ export function AssetAllyForm() {
     doc.save(`AssetAlly_Reporte_${data.name.replace(/\s/g, '_')}.pdf`);
   };
 
-  const handleDownloadWord = () => {
+  const handleDownloadWord = async () => {
+    const { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, WidthType, BorderStyle } = await import("docx");
+    const { saveAs } = await import("file-saver");
+    
     const data = form.getValues();
     if (!data.name) {
         toast({
