@@ -13,6 +13,7 @@ const equipmentSchema = z.object({
   name: z.string().min(1, "El nombre del equipo es obligatorio."),
   serial: z.string().min(1, "El número de serie es obligatorio."),
   hasLicense: z.boolean().default(false),
+  licenseSerial: z.string().optional(),
   observations: z.string().optional(),
 });
 
@@ -20,6 +21,7 @@ const softwareSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "El nombre del software es obligatorio."),
   hasLicense: z.boolean().default(false),
+  licenseSerial: z.string().optional(),
   observations: z.string().optional(),
 });
 

@@ -164,8 +164,8 @@ export function AssetAllyForm() {
         doc.text("Equipamiento", 14, lastY + 15);
         (doc as any).autoTable({
             startY: lastY + 20,
-            head: [['Nombre', 'N/S', 'Tiene Licencia', 'Observaciones']],
-            body: data.equipments.map(e => [e.name, e.serial, e.hasLicense ? 'Sí' : 'No', e.observations || 'N/A']),
+            head: [['Nombre', 'N/S', 'Tiene Licencia', 'Serial Licencia', 'Observaciones']],
+            body: data.equipments.map(e => [e.name, e.serial, e.hasLicense ? 'Sí' : 'No', e.hasLicense ? (e.licenseSerial || 'N/A') : 'N/A', e.observations || 'N/A']),
             theme: 'grid'
         });
         lastY = (doc as any).lastAutoTable.finalY;
@@ -175,8 +175,8 @@ export function AssetAllyForm() {
         doc.text("Software", 14, lastY + 15);
         (doc as any).autoTable({
             startY: lastY + 20,
-            head: [['Nombre', 'Tiene Licencia', 'Observaciones']],
-            body: data.software.map(s => [s.name, s.hasLicense ? 'Sí' : 'No', s.observations || 'N/A']),
+            head: [['Nombre', 'Tiene Licencia', 'Serial Licencia', 'Observaciones']],
+            body: data.software.map(s => [s.name, s.hasLicense ? 'Sí' : 'No', s.hasLicense ? (s.licenseSerial || 'N/A') : 'N/A', s.observations || 'N/A']),
             theme: 'grid'
         });
         lastY = (doc as any).lastAutoTable.finalY;
@@ -235,6 +235,9 @@ export function AssetAllyForm() {
             content += `  Nombre: ${e.name}\n`;
             content += `  N/S: ${e.serial}\n`;
             content += `  Tiene Licencia: ${e.hasLicense ? 'Sí' : 'No'}\n`;
+            if (e.hasLicense) {
+              content += `  Serial Licencia: ${e.licenseSerial || 'N/A'}\n`;
+            }
             content += `  Observaciones: ${e.observations || 'N/A'}\n\n`;
         });
     }
@@ -245,6 +248,9 @@ export function AssetAllyForm() {
             content += `Software #${i + 1}\n`;
             content += `  Nombre: ${s.name}\n`;
             content += `  Tiene Licencia: ${s.hasLicense ? 'Sí' : 'No'}\n`;
+            if (s.hasLicense) {
+              content += `  Serial Licencia: ${s.licenseSerial || 'N/A'}\n`;
+            }
             content += `  Observaciones: ${s.observations || 'N/A'}\n\n`;
         });
     }
@@ -471,60 +477,75 @@ export function AssetAllyForm() {
                                 </FormItem>
                             )}
                          />
-                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
-                            <FormField
-                                control={form.control}
-                                name={`equipments.${index}.serial`}
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Número de Serie</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="p.ej., ABC123XYZ" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                             <FormField
-                                control={form.control}
-                                name={`equipments.${index}.observations`}
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Observaciones</FormLabel>
+                        <FormField
+                            control={form.control}
+                            name={`equipments.${index}.serial`}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Número de Serie</FormLabel>
                                     <FormControl>
-                                      <Textarea placeholder="Añade tus observaciones aquí..." {...field} />
+                                        <Input placeholder="p.ej., ABC123XYZ" {...field} />
                                     </FormControl>
                                     <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                         </div>
-                        <div className="flex items-center justify-between gap-4">
-                            <FormField
-                                control={form.control}
-                                name={`equipments.${index}.hasLicense`}
-                                render={({ field }) => (
-                                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm flex-1">
-                                        <FormLabel>¿Tiene Licencia?</FormLabel>
-                                        <FormControl>
-                                            <Switch checked={field.value} onCheckedChange={field.onChange} />
-                                        </FormControl>
-                                    </FormItem>
-                                )}
-                            />
-                            <Button
-                                type="button"
-                                variant="destructive"
-                                size="icon"
-                                onClick={() => removeEquipment(index)}
-                                aria-label="Eliminar equipamiento"
-                            >
-                                <Trash2 className="h-4 w-4" />
-                            </Button>
+                                </FormItem>
+                            )}
+                        />
+                         <FormField
+                            control={form.control}
+                            name={`equipments.${index}.observations`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Observaciones</FormLabel>
+                                <FormControl>
+                                  <Textarea placeholder="Añade tus observaciones aquí..." {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-between gap-4">
+                                <FormField
+                                    control={form.control}
+                                    name={`equipments.${index}.hasLicense`}
+                                    render={({ field }) => (
+                                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm flex-1">
+                                            <FormLabel>¿Tiene Licencia?</FormLabel>
+                                            <FormControl>
+                                                <Switch checked={field.value} onCheckedChange={field.onChange} />
+                                            </FormControl>
+                                        </FormItem>
+                                    )}
+                                />
+                                <Button
+                                    type="button"
+                                    variant="destructive"
+                                    size="icon"
+                                    onClick={() => removeEquipment(index)}
+                                    aria-label="Eliminar equipamiento"
+                                >
+                                    <Trash2 className="h-4 w-4" />
+                                </Button>
+                            </div>
+                            {form.watch(`equipments.${index}.hasLicense`) && (
+                                <FormField
+                                    control={form.control}
+                                    name={`equipments.${index}.licenseSerial`}
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Serial de Licencia</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="Introduce el serial de la licencia" {...field} value={field.value ?? ''} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            )}
                         </div>
                     </div>
                 ))}
-                 <Button type="button" variant="outline" onClick={() => appendEquipment({ name: '', serial: '', hasLicense: false, observations: '' })}>
+                 <Button type="button" variant="outline" onClick={() => appendEquipment({ name: '', serial: '', hasLicense: false, licenseSerial: '', observations: '' })}>
                     <PlusCircle className="mr-2 h-4 w-4" /> Añadir Equipamiento
                  </Button>
             </CardContent>
@@ -566,32 +587,49 @@ export function AssetAllyForm() {
                           </FormItem>
                         )}
                       />
-                      <div className="flex items-center justify-between gap-4">
-                          <FormField
-                              control={form.control}
-                              name={`software.${index}.hasLicense`}
-                              render={({ field }) => (
-                                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm flex-1">
-                                      <FormLabel>¿Tiene Licencia?</FormLabel>
-                                      <FormControl>
-                                          <Switch checked={field.value} onCheckedChange={field.onChange} />
-                                      </FormControl>
-                                  </FormItem>
-                              )}
-                          />
-                          <Button
-                              type="button"
-                              variant="destructive"
-                              size="icon"
-                              onClick={() => removeSoftware(index)}
-                              aria-label="Eliminar software"
-                          >
-                              <Trash2 className="h-4 w-4" />
-                          </Button>
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between gap-4">
+                            <FormField
+                                control={form.control}
+                                name={`software.${index}.hasLicense`}
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm flex-1">
+                                        <FormLabel>¿Tiene Licencia?</FormLabel>
+                                        <FormControl>
+                                            <Switch checked={field.value} onCheckedChange={field.onChange} />
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                            <Button
+                                type="button"
+                                variant="destructive"
+                                size="icon"
+                                onClick={() => removeSoftware(index)}
+                                aria-label="Eliminar software"
+                            >
+                                <Trash2 className="h-4 w-4" />
+                            </Button>
+                        </div>
+                        {form.watch(`software.${index}.hasLicense`) && (
+                            <FormField
+                                control={form.control}
+                                name={`software.${index}.licenseSerial`}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Serial de Licencia</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Introduce el serial de la licencia" {...field} value={field.value ?? ''} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        )}
                       </div>
                   </div>
               ))}
-              <Button type="button" variant="outline" onClick={() => appendSoftware({ name: '', hasLicense: false, observations: '' })}>
+              <Button type="button" variant="outline" onClick={() => appendSoftware({ name: '', hasLicense: false, licenseSerial: '', observations: '' })}>
                   <PlusCircle className="mr-2 h-4 w-4" /> Añadir Software
               </Button>
             </CardContent>
