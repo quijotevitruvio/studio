@@ -17,6 +17,7 @@ const equipmentSchema = z.object({
 const softwareSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "El nombre del software es obligatorio."),
+  hasLicense: z.boolean().default(false),
 });
 
 const websiteSchema = z.object({

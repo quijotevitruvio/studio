@@ -166,8 +166,8 @@ export function AssetAllyForm() {
         doc.text("Software", 14, lastY + 15);
         autoTable(doc, {
             startY: lastY + 20,
-            head: [['Nombre']],
-            body: data.software.map(s => [s.name]),
+            head: [['Nombre', 'Tiene Licencia']],
+            body: data.software.map(s => [s.name, s.hasLicense ? 'Sí' : 'No']),
             theme: 'grid'
         });
         lastY = (doc as any).lastAutoTable.finalY;
@@ -253,8 +253,9 @@ export function AssetAllyForm() {
 
     if (data.software && data.software.length > 0) {
         sections.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun("Software")] }));
-        const softwareRows = [new TableRow({ children: [createHeaderCell("Nombre")] })]
-            .concat(data.software.map(s => new TableRow({ children: [createCell(s.name)] })));
+        const softwareRows = [
+            new TableRow({ children: [createHeaderCell("Nombre"), createHeaderCell("Tiene Licencia")] })
+        ].concat(data.software.map(s => new TableRow({ children: [createCell(s.name), createCell(s.hasLicense ? 'Sí' : 'No')] })));
         sections.push(new Table({ rows: softwareRows, width: { size: 100, type: WidthType.PERCENTAGE }, borders: tableBorders }));
         sections.push(new Paragraph({ text: "" }));
     }
@@ -498,34 +499,49 @@ export function AssetAllyForm() {
                 <CardDescription>Enumera el software de uso frecuente.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-                {softwareFields.map((field, index) => (
-                    <div key={field.id} className="flex items-center gap-4 p-2 border rounded-lg bg-background">
-                        <FormField
-                            control={form.control}
-                            name={`software.${index}.name`}
-                            render={({ field }) => (
-                                <FormItem className="flex-grow">
-                                    <FormControl>
-                                        <Input placeholder="p.ej., VS Code, Photoshop" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                         <Button
-                            type="button"
-                            variant="destructive"
-                            size="icon"
-                            onClick={() => removeSoftware(index)}
-                            aria-label="Eliminar software"
-                        >
-                            <Trash2 className="h-4 w-4" />
-                        </Button>
-                    </div>
-                ))}
-                <Button type="button" variant="outline" onClick={() => appendSoftware({ name: '' })}>
-                    <PlusCircle className="mr-2 h-4 w-4" /> Añadir Software
-                </Button>
+              {softwareFields.map((field, index) => (
+                  <div key={field.id} className="p-4 border rounded-lg space-y-4 bg-background">
+                      <FormField
+                          control={form.control}
+                          name={`software.${index}.name`}
+                          render={({ field }) => (
+                              <FormItem>
+                                  <FormLabel>Nombre del Software</FormLabel>
+                                  <FormControl>
+                                      <Input placeholder="p.ej., VS Code, Photoshop" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                              </FormItem>
+                          )}
+                      />
+                      <div className="flex items-center justify-between gap-4">
+                          <FormField
+                              control={form.control}
+                              name={`software.${index}.hasLicense`}
+                              render={({ field }) => (
+                                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm flex-1">
+                                      <FormLabel>¿Tiene Licencia?</FormLabel>
+                                      <FormControl>
+                                          <Switch checked={field.value} onCheckedChange={field.onChange} />
+                                      </FormControl>
+                                  </FormItem>
+                              )}
+                          />
+                          <Button
+                              type="button"
+                              variant="destructive"
+                              size="icon"
+                              onClick={() => removeSoftware(index)}
+                              aria-label="Eliminar software"
+                          >
+                              <Trash2 className="h-4 w-4" />
+                          </Button>
+                      </div>
+                  </div>
+              ))}
+              <Button type="button" variant="outline" onClick={() => appendSoftware({ name: '', hasLicense: false })}>
+                  <PlusCircle className="mr-2 h-4 w-4" /> Añadir Software
+              </Button>
             </CardContent>
           </Card>
 
