@@ -30,6 +30,7 @@ const websiteSchema = z.object({
 });
 
 export const assetAllySchema = z.object({
+  companyName: z.string().min(1, "El nombre de la empresa es obligatorio."),
   name: z.string().min(2, "El nombre debe tener al menos 2 caracteres."),
   jobTitle: z.string().min(2, "El puesto de trabajo debe tener al menos 2 caracteres."),
   contacts: z.array(phoneSchema).default([]),

@@ -45,6 +45,7 @@ import {
   Sparkles,
   Loader2,
   Download,
+  Building2,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -59,6 +60,7 @@ export function AssetAllyForm() {
   const form = useForm<AssetAllyFormValues>({
     resolver: zodResolver(assetAllySchema),
     defaultValues: {
+      companyName: "",
       name: "",
       jobTitle: "",
       contacts: [],
@@ -137,11 +139,11 @@ export function AssetAllyForm() {
     doc.text(`Generado el: ${new Date().toLocaleDateString()}`, 14, 38);
     
     doc.setFontSize(14);
-    doc.text("Información del Usuario", 14, 50);
+    doc.text("Información General", 14, 50);
     (doc as any).autoTable({
       startY: 55,
-      head: [['Nombre Completo', 'Puesto de Trabajo']],
-      body: [[data.name, data.jobTitle]],
+      head: [['Empresa', 'Nombre Completo', 'Puesto de Trabajo']],
+      body: [[data.companyName || 'N/A', data.name, data.jobTitle]],
       theme: 'grid'
     });
     
@@ -210,7 +212,8 @@ export function AssetAllyForm() {
     content += `¡Atención! Este documento contiene información sensible, incluyendo contraseñas. Manéjelo con cuidado.\n\n`;
     content += `Generado el: ${new Date().toLocaleDateString()}\n\n`;
 
-    content += `--- Información del Usuario ---\n`;
+    content += `--- Información General ---\n`;
+    content += `Empresa: ${data.companyName || 'N/A'}\n`;
     content += `Nombre Completo: ${data.name || 'N/A'}\n`;
     content += `Puesto de Trabajo: ${data.jobTitle || 'N/A'}\n\n`;
 
@@ -263,6 +266,32 @@ export function AssetAllyForm() {
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Building2 className="text-primary" /> Información de la Empresa
+              </CardTitle>
+              <CardDescription>
+                Introduce el nombre de la empresa.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <FormField
+                control={form.control}
+                name="companyName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nombre de la Empresa</FormLabel>
+                    <FormControl>
+                      <Input placeholder="p.ej., ACME S.L." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
