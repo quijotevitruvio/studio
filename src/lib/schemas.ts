@@ -5,6 +5,7 @@ const phoneSchema = z.object({
   number: z.string().min(1, "El número de teléfono es obligatorio."),
   type: z.enum(["personal", "empresa"]).default("personal"),
   hasWhatsapp: z.boolean().default(false),
+  observations: z.string().optional(),
 });
 
 const equipmentSchema = z.object({
@@ -12,12 +13,14 @@ const equipmentSchema = z.object({
   name: z.string().min(1, "El nombre del equipo es obligatorio."),
   serial: z.string().min(1, "El número de serie es obligatorio."),
   hasLicense: z.boolean().default(false),
+  observations: z.string().optional(),
 });
 
 const softwareSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "El nombre del software es obligatorio."),
   hasLicense: z.boolean().default(false),
+  observations: z.string().optional(),
 });
 
 const websiteSchema = z.object({
@@ -27,6 +30,7 @@ const websiteSchema = z.object({
   password: z.string().min(1, "La contraseña es obligatoria."),
   has2fa: z.boolean().default(false),
   recoveryEmail: z.string().email("Email de recuperación inválido.").optional().or(z.literal("")),
+  observations: z.string().optional(),
 });
 
 export const assetAllySchema = z.object({

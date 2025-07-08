@@ -153,8 +153,8 @@ export function AssetAllyForm() {
         doc.text("Contactos", 14, lastY + 15);
         (doc as any).autoTable({
             startY: lastY + 20,
-            head: [['Número', 'Tipo', 'Tiene WhatsApp']],
-            body: data.contacts.map(c => [c.number, c.type === 'personal' ? 'Personal' : 'Empresa', c.hasWhatsapp ? 'Sí' : 'No']),
+            head: [['Número', 'Tipo', 'Tiene WhatsApp', 'Observaciones']],
+            body: data.contacts.map(c => [c.number, c.type === 'personal' ? 'Personal' : 'Empresa', c.hasWhatsapp ? 'Sí' : 'No', c.observations || 'N/A']),
             theme: 'grid'
         });
         lastY = (doc as any).lastAutoTable.finalY;
@@ -164,8 +164,8 @@ export function AssetAllyForm() {
         doc.text("Equipamiento", 14, lastY + 15);
         (doc as any).autoTable({
             startY: lastY + 20,
-            head: [['Nombre', 'N/S', 'Tiene Licencia']],
-            body: data.equipments.map(e => [e.name, e.serial, e.hasLicense ? 'Sí' : 'No']),
+            head: [['Nombre', 'N/S', 'Tiene Licencia', 'Observaciones']],
+            body: data.equipments.map(e => [e.name, e.serial, e.hasLicense ? 'Sí' : 'No', e.observations || 'N/A']),
             theme: 'grid'
         });
         lastY = (doc as any).lastAutoTable.finalY;
@@ -175,8 +175,8 @@ export function AssetAllyForm() {
         doc.text("Software", 14, lastY + 15);
         (doc as any).autoTable({
             startY: lastY + 20,
-            head: [['Nombre', 'Tiene Licencia']],
-            body: data.software.map(s => [s.name, s.hasLicense ? 'Sí' : 'No']),
+            head: [['Nombre', 'Tiene Licencia', 'Observaciones']],
+            body: data.software.map(s => [s.name, s.hasLicense ? 'Sí' : 'No', s.observations || 'N/A']),
             theme: 'grid'
         });
         lastY = (doc as any).lastAutoTable.finalY;
@@ -186,8 +186,8 @@ export function AssetAllyForm() {
         doc.text("Credenciales Web", 14, lastY + 15);
         (doc as any).autoTable({
             startY: lastY + 20,
-            head: [['URL', 'Email/Usuario', 'Contraseña', '2FA', 'Email Recuperación']],
-            body: data.websites.map(w => [w.url, w.email, w.password, w.has2fa ? 'Sí' : 'No', w.recoveryEmail || 'N/A']),
+            head: [['URL', 'Email/Usuario', 'Contraseña', '2FA', 'Email Recuperación', 'Observaciones']],
+            body: data.websites.map(w => [w.url, w.email, w.password, w.has2fa ? 'Sí' : 'No', w.recoveryEmail || 'N/A', w.observations || 'N/A']),
             theme: 'grid'
         });
     }
@@ -223,7 +223,8 @@ export function AssetAllyForm() {
             content += `Contacto #${i + 1}\n`;
             content += `  Número: ${c.number}\n`;
             content += `  Tipo: ${c.type === 'personal' ? 'Personal' : 'Empresa'}\n`;
-            content += `  Tiene WhatsApp: ${c.hasWhatsapp ? 'Sí' : 'No'}\n\n`;
+            content += `  Tiene WhatsApp: ${c.hasWhatsapp ? 'Sí' : 'No'}\n`;
+            content += `  Observaciones: ${c.observations || 'N/A'}\n\n`;
         });
     }
 
@@ -233,7 +234,8 @@ export function AssetAllyForm() {
             content += `Equipo #${i + 1}\n`;
             content += `  Nombre: ${e.name}\n`;
             content += `  N/S: ${e.serial}\n`;
-            content += `  Tiene Licencia: ${e.hasLicense ? 'Sí' : 'No'}\n\n`;
+            content += `  Tiene Licencia: ${e.hasLicense ? 'Sí' : 'No'}\n`;
+            content += `  Observaciones: ${e.observations || 'N/A'}\n\n`;
         });
     }
 
@@ -242,7 +244,8 @@ export function AssetAllyForm() {
         data.software.forEach((s, i) => {
             content += `Software #${i + 1}\n`;
             content += `  Nombre: ${s.name}\n`;
-            content += `  Tiene Licencia: ${s.hasLicense ? 'Sí' : 'No'}\n\n`;
+            content += `  Tiene Licencia: ${s.hasLicense ? 'Sí' : 'No'}\n`;
+            content += `  Observaciones: ${s.observations || 'N/A'}\n\n`;
         });
     }
 
@@ -254,7 +257,8 @@ export function AssetAllyForm() {
             content += `  Email/Usuario: ${w.email}\n`;
             content += `  Contraseña: ${w.password}\n`;
             content += `  2FA Habilitado: ${w.has2fa ? 'Sí' : 'No'}\n`;
-            content += `  Email Recuperación: ${w.recoveryEmail || 'N/A'}\n\n`;
+            content += `  Email Recuperación: ${w.recoveryEmail || 'N/A'}\n`;
+            content += `  Observaciones: ${w.observations || 'N/A'}\n\n`;
         });
     }
 
@@ -385,6 +389,19 @@ export function AssetAllyForm() {
                       )}
                     />
                   </div>
+                  <FormField
+                    control={form.control}
+                    name={`contacts.${index}.observations`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Observaciones</FormLabel>
+                        <FormControl>
+                          <Textarea placeholder="Añade tus observaciones aquí..." {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   <div className="flex items-center justify-between gap-4">
                     <FormField
                       control={form.control}
@@ -421,6 +438,7 @@ export function AssetAllyForm() {
                     number: "",
                     type: "personal",
                     hasWhatsapp: false,
+                    observations: "",
                   })
                 }
               >
@@ -453,7 +471,7 @@ export function AssetAllyForm() {
                                 </FormItem>
                             )}
                          />
-                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
+                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
                             <FormField
                                 control={form.control}
                                 name={`equipments.${index}.serial`}
@@ -467,33 +485,46 @@ export function AssetAllyForm() {
                                     </FormItem>
                                 )}
                             />
-                            <div className="flex items-center justify-between gap-4">
-                                <FormField
-                                    control={form.control}
-                                    name={`equipments.${index}.hasLicense`}
-                                    render={({ field }) => (
-                                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm flex-1">
-                                            <FormLabel>¿Tiene Licencia?</FormLabel>
-                                            <FormControl>
-                                                <Switch checked={field.value} onCheckedChange={field.onChange} />
-                                            </FormControl>
-                                        </FormItem>
-                                    )}
-                                />
-                                <Button
-                                    type="button"
-                                    variant="destructive"
-                                    size="icon"
-                                    onClick={() => removeEquipment(index)}
-                                    aria-label="Eliminar equipamiento"
-                                >
-                                    <Trash2 className="h-4 w-4" />
-                                </Button>
-                            </div>
+                             <FormField
+                                control={form.control}
+                                name={`equipments.${index}.observations`}
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Observaciones</FormLabel>
+                                    <FormControl>
+                                      <Textarea placeholder="Añade tus observaciones aquí..." {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
                          </div>
+                        <div className="flex items-center justify-between gap-4">
+                            <FormField
+                                control={form.control}
+                                name={`equipments.${index}.hasLicense`}
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm flex-1">
+                                        <FormLabel>¿Tiene Licencia?</FormLabel>
+                                        <FormControl>
+                                            <Switch checked={field.value} onCheckedChange={field.onChange} />
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                            <Button
+                                type="button"
+                                variant="destructive"
+                                size="icon"
+                                onClick={() => removeEquipment(index)}
+                                aria-label="Eliminar equipamiento"
+                            >
+                                <Trash2 className="h-4 w-4" />
+                            </Button>
+                        </div>
                     </div>
                 ))}
-                 <Button type="button" variant="outline" onClick={() => appendEquipment({ name: '', serial: '', hasLicense: false })}>
+                 <Button type="button" variant="outline" onClick={() => appendEquipment({ name: '', serial: '', hasLicense: false, observations: '' })}>
                     <PlusCircle className="mr-2 h-4 w-4" /> Añadir Equipamiento
                  </Button>
             </CardContent>
@@ -522,6 +553,19 @@ export function AssetAllyForm() {
                               </FormItem>
                           )}
                       />
+                      <FormField
+                        control={form.control}
+                        name={`software.${index}.observations`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Observaciones</FormLabel>
+                            <FormControl>
+                              <Textarea placeholder="Añade tus observaciones aquí..." {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                       <div className="flex items-center justify-between gap-4">
                           <FormField
                               control={form.control}
@@ -547,7 +591,7 @@ export function AssetAllyForm() {
                       </div>
                   </div>
               ))}
-              <Button type="button" variant="outline" onClick={() => appendSoftware({ name: '', hasLicense: false })}>
+              <Button type="button" variant="outline" onClick={() => appendSoftware({ name: '', hasLicense: false, observations: '' })}>
                   <PlusCircle className="mr-2 h-4 w-4" /> Añadir Software
               </Button>
             </CardContent>
@@ -603,6 +647,19 @@ export function AssetAllyForm() {
                                 )}
                             />
                         </div>
+                         <FormField
+                            control={form.control}
+                            name={`websites.${index}.observations`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Observaciones</FormLabel>
+                                <FormControl>
+                                  <Textarea placeholder="Añade tus observaciones aquí..." {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
                             <FormField
                                 control={form.control}
@@ -633,7 +690,7 @@ export function AssetAllyForm() {
                         </div>
                     </div>
                 ))}
-                <Button type="button" variant="outline" onClick={() => appendWebsite({ url: '', email: '', password: '', has2fa: false, recoveryEmail: '' })}>
+                <Button type="button" variant="outline" onClick={() => appendWebsite({ url: '', email: '', password: '', has2fa: false, recoveryEmail: '', observations: '' })}>
                     <PlusCircle className="mr-2 h-4 w-4" /> Añadir Sitio Web
                 </Button>
             </CardContent>
@@ -666,5 +723,3 @@ export function AssetAllyForm() {
     </>
   );
 }
-
-    
