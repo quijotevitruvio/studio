@@ -191,10 +191,8 @@ export function AssetAllyForm() {
     doc.save(`Famysalud_Reporte_${data.name.replace(/\s/g, '_')}.pdf`);
   };
 
-  const handleDownloadWord = async () => {
-    const { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, WidthType, BorderStyle } = await import("docx");
+  const handleDownloadTxt = async () => {
     const { saveAs } = await import("file-saver");
-    
     const data = form.getValues();
     if (!data.name) {
         toast({
@@ -205,92 +203,58 @@ export function AssetAllyForm() {
         return;
     }
 
-    const sections = [
-        new Paragraph({
-            heading: HeadingLevel.HEADING_1,
-            children: [new TextRun("Informe de Salud - Famysalud")],
-        }),
-        new Paragraph({
-            children: [new TextRun({
-                text: "¡Atención! Este documento contiene información sensible, incluyendo contraseñas. Manéjelo con cuidado.",
-                color: "FF0000",
-                bold: true,
-            })],
-        }),
-        new Paragraph({
-            children: [new TextRun(`Generado el: ${new Date().toLocaleDateString()}`)],
-        }),
-        new Paragraph({ text: "" }),
-    ];
+    let content = `Informe de Salud - Famysalud\n`;
+    content += `===================================\n\n`;
+    content += `¡Atención! Este documento contiene información sensible, incluyendo contraseñas. Manéjelo con cuidado.\n\n`;
+    content += `Generado el: ${new Date().toLocaleDateString()}\n\n`;
 
-    sections.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun("Información del Usuario")] }));
-    sections.push(new Paragraph({ children: [new TextRun({ text: "Nombre: ", bold: true }), new TextRun(data.name || '')] }));
-    sections.push(new Paragraph({ children: [new TextRun({ text: "Puesto: ", bold: true }), new TextRun(data.jobTitle || '')] }));
-    sections.push(new Paragraph({ text: "" }));
-
-    const tableBorders = {
-        top: { style: BorderStyle.SINGLE, size: 1, color: "AAAAAA" },
-        bottom: { style: BorderStyle.SINGLE, size: 1, color: "AAAAAA" },
-        left: { style: BorderStyle.SINGLE, size: 1, color: "AAAAAA" },
-        right: { style: BorderStyle.SINGLE, size: 1, color: "AAAAAA" },
-        insideHorizontal: { style: BorderStyle.SINGLE, size: 1, color: "AAAAAA" },
-        insideVertical: { style: BorderStyle.SINGLE, size: 1, color: "AAAAAA" },
-    };
-    
-    const createHeaderCell = (text: string) => new TableCell({
-        children: [new Paragraph({ children: [new TextRun({ text, bold: true })] })],
-    });
-    
-    const createCell = (text: string) => new TableCell({
-        children: [new Paragraph(text)],
-    });
+    content += `--- Información del Usuario ---\n`;
+    content += `Nombre Completo: ${data.name || 'N/A'}\n`;
+    content += `Puesto de Trabajo: ${data.jobTitle || 'N/A'}\n\n`;
 
     if (data.contacts && data.contacts.length > 0) {
-        sections.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun("Contactos")] }));
-        const contactRows = [
-            new TableRow({ children: [createHeaderCell("Número"), createHeaderCell("Tipo"), createHeaderCell("Tiene WhatsApp")] })
-        ].concat(data.contacts.map(c => new TableRow({ children: [createCell(c.number), createCell(c.type === 'personal' ? 'Personal' : 'Empresa'), createCell(c.hasWhatsapp ? 'Sí' : 'No')] })));
-        sections.push(new Table({ rows: contactRows, width: { size: 100, type: WidthType.PERCENTAGE }, borders: tableBorders }));
-        sections.push(new Paragraph({ text: "" }));
+        content += `--- Contactos ---\n`;
+        data.contacts.forEach((c, i) => {
+            content += `Contacto #${i + 1}\n`;
+            content += `  Número: ${c.number}\n`;
+            content += `  Tipo: ${c.type === 'personal' ? 'Personal' : 'Empresa'}\n`;
+            content += `  Tiene WhatsApp: ${c.hasWhatsapp ? 'Sí' : 'No'}\n\n`;
+        });
     }
 
     if (data.equipments && data.equipments.length > 0) {
-        sections.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun("Equipamiento")] }));
-        const equipmentRows = [
-            new TableRow({ children: [createHeaderCell("Nombre"), createHeaderCell("N/S"), createHeaderCell("Tiene Licencia")] })
-        ].concat(data.equipments.map(e => new TableRow({ children: [createCell(e.name), createCell(e.serial), createCell(e.hasLicense ? 'Sí' : 'No')] })));
-        sections.push(new Table({ rows: equipmentRows, width: { size: 100, type: WidthType.PERCENTAGE }, borders: tableBorders }));
-        sections.push(new Paragraph({ text: "" }));
+        content += `--- Equipamiento ---\n`;
+        data.equipments.forEach((e, i) => {
+            content += `Equipo #${i + 1}\n`;
+            content += `  Nombre: ${e.name}\n`;
+            content += `  N/S: ${e.serial}\n`;
+            content += `  Tiene Licencia: ${e.hasLicense ? 'Sí' : 'No'}\n\n`;
+        });
     }
 
     if (data.software && data.software.length > 0) {
-        sections.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun("Software")] }));
-        const softwareRows = [
-            new TableRow({ children: [createHeaderCell("Nombre"), createHeaderCell("Tiene Licencia")] })
-        ].concat(data.software.map(s => new TableRow({ children: [createCell(s.name), createCell(s.hasLicense ? 'Sí' : 'No')] })));
-        sections.push(new Table({ rows: softwareRows, width: { size: 100, type: WidthType.PERCENTAGE }, borders: tableBorders }));
-        sections.push(new Paragraph({ text: "" }));
+        content += `--- Software ---\n`;
+        data.software.forEach((s, i) => {
+            content += `Software #${i + 1}\n`;
+            content += `  Nombre: ${s.name}\n`;
+            content += `  Tiene Licencia: ${s.hasLicense ? 'Sí' : 'No'}\n\n`;
+        });
     }
 
     if (data.websites && data.websites.length > 0) {
-        sections.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun("Credenciales Web")] }));
-        const websiteRows = [
-            new TableRow({ children: [createHeaderCell("URL"), createHeaderCell("Email/Usuario"), createHeaderCell("Contraseña"), createHeaderCell("2FA"), createHeaderCell("Email Recuperación")] })
-        ].concat(data.websites.map(w => new TableRow({ children: [
-            createCell(w.url), 
-            createCell(w.email), 
-            createCell(w.password),
-            createCell(w.has2fa ? 'Sí' : 'No'),
-            createCell(w.recoveryEmail || 'N/A')
-        ] })));
-        sections.push(new Table({ rows: websiteRows, width: { size: 100, type: WidthType.PERCENTAGE }, borders: tableBorders }));
+        content += `--- Credenciales Web ---\n`;
+        data.websites.forEach((w, i) => {
+            content += `Sitio Web #${i + 1}\n`;
+            content += `  URL: ${w.url}\n`;
+            content += `  Email/Usuario: ${w.email}\n`;
+            content += `  Contraseña: ${w.password}\n`;
+            content += `  2FA Habilitado: ${w.has2fa ? 'Sí' : 'No'}\n`;
+            content += `  Email Recuperación: ${w.recoveryEmail || 'N/A'}\n\n`;
+        });
     }
 
-    const doc = new Document({ sections: [{ children: sections }] });
-
-    Packer.toBlob(doc).then(blob => {
-        saveAs(blob, `Famysalud_Reporte_${data.name.replace(/\s/g, '_')}.docx`);
-    });
+    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+    saveAs(blob, `Famysalud_Reporte_${data.name.replace(/\s/g, '_')}.txt`);
   };
 
   return (
@@ -650,9 +614,9 @@ export function AssetAllyForm() {
               <Download className="mr-2 h-4 w-4" />
               Descargar PDF
             </Button>
-            <Button type="button" variant="outline" onClick={handleDownloadWord} disabled={isSubmitting}>
+            <Button type="button" variant="outline" onClick={handleDownloadTxt} disabled={isSubmitting}>
               <Download className="mr-2 h-4 w-4" />
-              Descargar Word
+              Descargar TXT
             </Button>
             <Button type="submit" size="lg" disabled={isSubmitting}>
               {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
