@@ -3,8 +3,8 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
-  title: 'AssetAlly',
-  description: 'Un asistente amigable para gestionar tus activos digitales y físicos de forma segura.',
+  title: 'Famysalud',
+  description: 'Tu asistente de salud familiar.',
 };
 
 export default function RootLayout({

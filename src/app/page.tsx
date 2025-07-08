@@ -12,10 +12,10 @@ export default function Home() {
             </div>
             <div>
               <h1 className="text-3xl sm:text-4xl font-bold font-headline text-foreground">
-                AssetAlly
+                Famysalud
               </h1>
               <p className="text-base text-muted-foreground mt-1">
-                Gestiona tus activos digitales y físicos de forma segura.
+                Tu asistente de salud familiar.
               </p>
             </div>
           </div>
@@ -24,7 +24,7 @@ export default function Home() {
         <AssetAllyForm />
       </main>
       <footer className="w-full max-w-4xl mx-auto mt-8 text-center text-sm text-muted-foreground">
-        <p>&copy; {new Date().getFullYear()} AssetAlly. Todos los derechos reservados.</p>
+        <p>&copy; {new Date().getFullYear()} Famysalud. Todos los derechos reservados.</p>
       </footer>
     </div>
   );

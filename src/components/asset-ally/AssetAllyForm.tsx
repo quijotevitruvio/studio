@@ -124,7 +124,7 @@ export function AssetAllyForm() {
     const doc = new jsPDF();
 
     doc.setFontSize(18);
-    doc.text("Informe de Activos - AssetAlly", 14, 22);
+    doc.text("Informe de Salud - Famysalud", 14, 22);
     
     doc.setFontSize(12);
     doc.text(`Generado el: ${new Date().toLocaleDateString()}`, 14, 30);
@@ -183,7 +183,7 @@ export function AssetAllyForm() {
         });
     }
 
-    doc.save(`AssetAlly_Reporte_${data.name.replace(/\s/g, '_')}.pdf`);
+    doc.save(`Famysalud_Reporte_${data.name.replace(/\s/g, '_')}.pdf`);
   };
 
   const handleDownloadWord = async () => {
@@ -203,7 +203,7 @@ export function AssetAllyForm() {
     const sections = [
         new Paragraph({
             heading: HeadingLevel.HEADING_1,
-            children: [new TextRun("Informe de Activos - AssetAlly")],
+            children: [new TextRun("Informe de Salud - Famysalud")],
         }),
         new Paragraph({
             children: [new TextRun(`Generado el: ${new Date().toLocaleDateString()}`)],
@@ -276,7 +276,7 @@ export function AssetAllyForm() {
     const doc = new Document({ sections: [{ children: sections }] });
 
     Packer.toBlob(doc).then(blob => {
-        saveAs(blob, `AssetAlly_Reporte_${data.name.replace(/\s/g, '_')}.docx`);
+        saveAs(blob, `Famysalud_Reporte_${data.name.replace(/\s/g, '_')}.docx`);
     });
   };
 
